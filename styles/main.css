@@ -1,3 +1,13 @@
+:root{
+    --peach: #ef9e9e;
+    --dark_peach: #d06c64;;
+    --darker_peach: #c9646a;
+    --black: #383838;
+    --white: #fafafa;
+    --hovered: #e0e0e0;
+    --clicked: #c0c0c0;
+}
+
 *,
 *::before,
 *::after {
@@ -7,27 +17,30 @@
 }
 
 body {
-    background-color: black;
+    background-color: var(--peach);
+    color: var(--black);
 }
 
 .calculator {
     border-radius: 20px;
     margin: 30px auto auto auto;
-    padding: 10px;
-    height: 600px;
+    padding: 15px;
+    height: 700px;
     width: 450px;
     display: grid;
-    grid-gap: 10px;
+    grid-gap: 15px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    background-color: white;
+    background-color: var(--white);
+    -webkit-box-shadow: 0px 6px 15px -2px #000000; 
+    box-shadow: 0px 6px 15px -2px #000000;
 }
 
 .display {
-    font-size: 80px;
-    font-family: Georgia, 'Times New Roman';
+    font-size: 60px;
+    font-family: 'Roboto Mono', monospace;
     text-align: right;
-    height: 130px;
-    background-color: red;
+    height: 135px;
+    background-color: var(--peach);
     grid-column: span 4;
     word-wrap: break-word;
     overflow: hidden;
@@ -36,16 +49,44 @@ body {
 }
 
 .btn {
-  margin: auto;
-  height: 80px;
-  width: 80px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
+    font-size: 23px;
+    font-family: 'Roboto Mono', monospace;
+    margin: auto;
+    border: none;
+    height: 80px;
+    width: 80px;
+    background-color: var(--white);
+    border-radius: 50%;
+    display: inline-block;
+    -webkit-box-shadow: 0px 6px 10px -2px #000000; 
+    box-shadow: 0px 4px 10px -2px #000000;
+    transition: all 0.2s;
+}
+
+.hovered, .btn:hover{
+    background-color: var(--hovered);
+}
+
+.selected, .btn:active {
+    background-color: var(--clicked);
+}
+
+.equal {
+    background-color: var(--peach);
+    color: var(--white);
+}
+
+.equal:hover {
+    background-color: var(--dark_peach);
+}
+
+.equal:active {
+    background-color: var(--darker_peach);
 }
 
 .span_two {
     width: 100%;
     border-radius: 50px;
     grid-column: span 2;
+    font-size: 20px;
 }
