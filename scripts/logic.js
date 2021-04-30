@@ -9,9 +9,9 @@ const equalBtn = document.querySelector("[data-equals]");
 
 let firstTerm;
 let secondTerm;
-let firstOperation = null;
+let operator = null;
 let result;
-let shouldClearScreen = false;
+let shouldClearScreen = true;
 let shouldReset = false;
 
 numBtns.forEach((btn) => {
@@ -29,24 +29,11 @@ clearBtn.addEventListener("click", ()=>{
 delBtn.addEventListener("click", ()=>deleteNumber());
 decimalBtn.addEventListener("click", ()=>appendDecimal());
 equalBtn.addEventListener("click", ()=>evaluate());
-
-function createCalculator(){
-    for (let i=0; i<16; i++){
-        const newBtn = document.createElement("button");
-        newBtn.textContent = i;
-        newBtn.addEventListener("click", ()=>{
-            if (newBtn.textContent == 0){
-                display.textContent = "";
-            } else if (newBtn.textContent == 1){
-                display.textContent = display.textContent.slice(0,-1);
-            } else {
-                display.textContent += newBtn.textContent
-            }
-        })
-        newBtn.classList.add("btn");
-        container.appendChild(newBtn);
-    }
-}
+window.addEventListener("keydown", (e)=>{
+    const btn = evaluateKey(e.key);
+    btn.click();
+})
+display.textContent = "0";
 
 function clearScreen(){
     display.textContent = "";
@@ -55,13 +42,14 @@ function clearScreen(){
     if (shouldReset){
         firstTerm = "";
         secondTerm = "";
-        firstOperation = null;
+        operator = null;
         shouldReset = false;
+        display.textContent = "0";
     }
 }
 
 function appendNum(elem){
-    if (shouldClearScreen) clearScreen();
+    if (shouldClearScreen || display.textContent === "0") clearScreen();
     display.textContent += elem.textContent;
 }
 
@@ -73,15 +61,17 @@ function deleteNumber(){
 }
 
 function appendOperator(elem) {
-    if (firstOperation != null) {
+    if (operator != null) {
         evaluate();
     }
-    firstOperation = elem.textContent;
+    operator = elem.textContent;
     firstTerm = parseFloat(display.textContent);
+    if (Number.isNaN(firstTerm)) return;
     shouldClearScreen = true;
 }
 
 function appendDecimal(){
+    if (shouldClearScreen) clearScreen();
     if (!((display.textContent.includes(".")) || (display.textContent == ""))){
         display.textContent += ".";
     }
@@ -89,14 +79,15 @@ function appendDecimal(){
 
 function evaluate() {
     secondTerm = parseFloat(display.textContent);
-    if ((secondTerm === 0) && firstOperation === "/") {
+    if (secondTerm === 0 && operator === "/") {
         display.textContent = "ERR";
         shouldClearScreen = true;
         return;
     }
-    let result = operate(firstOperation, firstTerm, secondTerm)
+    if (operator == null) return;
+    let result = operate(operator, firstTerm, secondTerm)
     display.textContent = roundOff(result);
-    firstOperation = null;
+    operator = null;
 }
 
 function operate(operation, a ,b) {
@@ -116,4 +107,22 @@ function roundOff(num) {
     return Math.round((num + Number.EPSILON) * 10000) / 10000;
 }
 
-// createCalculator();
+function evaluateKey(key){
+    const nums = "0123456789";
+    const operations = "+-/*";
+    let btnSelected;
+    if (nums.includes(key)){
+        btnSelected = document.querySelector(`[data-num="${key}"]`);
+    } else if (operations.includes(key)){
+        btnSelected = document.querySelector(`[data-operator="${key}"]`);
+    } else if (key === "Enter"){
+        btnSelected = document.querySelector("[data-equals]");
+    } else if (key === "Backspace") {
+        btnSelected = document.querySelector("[data-del]");
+    } else if (key === ".") {
+        btnSelected = document.querySelector("[data-decimal]");
+    } else {
+        return;
+    }
+    return btnSelected;
+}
